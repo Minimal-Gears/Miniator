@@ -7,8 +7,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\MinimalGears.Miniator.Contracts\MinimalGears.Miniator.Contracts.csproj" />
-    </ItemGroup>
-
 </Project>
