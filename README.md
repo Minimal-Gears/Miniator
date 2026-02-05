@@ -1,2 +1,2 @@
 # Miniator
-A lightweight implementation of the "Mediator" pattern
+A minimal(lightweight) implementation of the "Mediator" pattern
