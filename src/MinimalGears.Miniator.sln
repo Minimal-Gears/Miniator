@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimalGears.Miniator", "Mi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimalGears.Miniator.Contracts", "MinimalGears.Miniator.Contracts\MinimalGears.Miniator.Contracts.csproj", "{4C6BBC32-BC78-4045-9F90-857477648E87}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimalGears.Miniator.Tests", "MinimalGears.Miniator.Tests\MinimalGears.Miniator.Tests.csproj", "{8C4ED9EF-5933-4643-9ED0-6C27E8CB7DFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{4C6BBC32-BC78-4045-9F90-857477648E87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C6BBC32-BC78-4045-9F90-857477648E87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C6BBC32-BC78-4045-9F90-857477648E87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C4ED9EF-5933-4643-9ED0-6C27E8CB7DFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C4ED9EF-5933-4643-9ED0-6C27E8CB7DFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C4ED9EF-5933-4643-9ED0-6C27E8CB7DFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C4ED9EF-5933-4643-9ED0-6C27E8CB7DFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -4,7 +4,9 @@ namespace MinimalGears.Miniator;
 
 public interface ISender
 {
-    Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default);
+    Task<TResult> Send<TRequest, TResponse, TResult>(TRequest request, CancellationToken cancellationToken = default)
+        where TRequest : IRequest<TResult>
+        where TResponse : IRequestHandler<TRequest, TResult>;
 
-    Task Send(IRequest request, CancellationToken cancellationToken = default);
+    //Task Send(IRequest request, CancellationToken cancellationToken = default);
 }
