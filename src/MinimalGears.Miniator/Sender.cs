@@ -1,21 +1,21 @@
+using System.Collections.Concurrent;
 using MinimalGears.Miniator.Contracts;
 
 namespace MinimalGears.Miniator;
 
 public class Sender : ISender
 {
-    //private readonly Dictionary<Type, IRequestHandler> _handlers;
-    public Dictionary<Type, IRequestHandler> _handlers;
+    private static readonly ConcurrentDictionary<Type, IRequestHandler> _handlers = [];
 
-    public async Task<TResult> Send<TRequest, TResponse, TResult>(TRequest request, CancellationToken cancellationToken = default)
-        where TRequest : IRequest<TResult> where TResponse : IRequestHandler<TRequest, TResult>
+    public async Task<TResponse> Send<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default)
+        where TRequest : IRequest<TResponse>
     {
         var handler = _handlers[request.GetType()];
         if (handler == null) {
             throw new InvalidOperationException($"No handler registered for {request.GetType()}");
         }
 
-        return await ((IRequestHandler<TRequest, TResult>)handler).Handle(request, cancellationToken);
+        return await ((IRequestHandler<TRequest, TResponse>)handler).Handle(request, cancellationToken);
     }
 
     public async Task Send(IRequest request, CancellationToken cancellationToken = default)
@@ -26,5 +26,11 @@ public class Sender : ISender
         }
 
         await ((IRequestHandler<IRequest>)handler).Handle(request, cancellationToken);
+    }
+
+    public static void RegisterHandler<TRequest, TResponse>(IRequestHandler<TRequest, TResponse> handler)
+        where TRequest : IRequest<TResponse>
+    {
+        _handlers.GetOrAdd(typeof(TRequest), a => handler);
     }
 }

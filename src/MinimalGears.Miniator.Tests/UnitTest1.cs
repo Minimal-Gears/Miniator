@@ -7,6 +7,8 @@ public class UnitTest1
     [Fact]
     public async Task Test1()
     {
+        Sender.RegisterHandler(new AddCommandHandler());
+
         AddCommand request = new AddCommand
                                  {
                                      A = 1,
@@ -14,9 +16,7 @@ public class UnitTest1
                                  };
 
         ISender sender = new Sender();
-        ((Sender)sender)._handlers = new Dictionary<Type, IRequestHandler>();
-        ((Sender)sender)._handlers.Add(typeof(AddCommand), new AddCommandHandler());
-        var result = await sender.Send<AddCommand, AddCommandHandler, int>(request);
+        var result = await sender.Send<AddCommand, int>(request);
         Assert.Equal(3, result);
     }
 }
