@@ -1,4 +1,6 @@
-﻿using MinimalGears.Miniator.Contracts;
+﻿using Microsoft.Extensions.DependencyInjection;
+using MinimalGears.Miniator.Contracts;
+using MinimalGears.Miniator.DependencyInjection;
 
 namespace MinimalGears.Miniator.Tests;
 
@@ -7,7 +9,9 @@ public class UnitTest1
     [Fact]
     public async Task Test1()
     {
-        Sender.RegisterHandler(new AddCommandHandler());
+        var services = new ServiceCollection();
+        services.AddMiniator(typeof(UnitTest1).Assembly);
+        //Sender.RegisterHandler<AddCommandHandler, AddCommand, int>();
 
         AddCommand request = new AddCommand
                                  {
