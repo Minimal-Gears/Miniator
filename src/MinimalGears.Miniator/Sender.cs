@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Microsoft.Extensions.DependencyInjection;
 using MinimalGears.Miniator.Contracts;
 
 namespace MinimalGears.Miniator;
@@ -6,6 +7,12 @@ namespace MinimalGears.Miniator;
 public class Sender : ISender
 {
     private static readonly ConcurrentDictionary<Type, Type> _handlers = [];
+    private readonly IServiceProvider _serviceProvider;
+
+    public Sender(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
 
     public async Task<TResponse> Send<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default)
         where TRequest : IRequest<TResponse>
@@ -15,8 +22,8 @@ public class Sender : ISender
             throw new InvalidOperationException($"No handler registered for {request.GetType()}");
         }
 
-        var handler = Activator.CreateInstance(handlerType);
-        return await ((IRequestHandler<TRequest, TResponse>)handler).Handle(request, cancellationToken);
+        var handler = (IRequestHandler<TRequest, TResponse>)_serviceProvider.GetRequiredService(handlerType);
+        return await handler.Handle(request, cancellationToken);
     }
 
     public async Task Send(IRequest request, CancellationToken cancellationToken = default)
@@ -26,8 +33,8 @@ public class Sender : ISender
             throw new InvalidOperationException($"No handler registered for {request.GetType()}");
         }
 
-        var handler = Activator.CreateInstance(handlerType);
-        await ((IRequestHandler<IRequest>)handler).Handle(request, cancellationToken);
+        var handler = (IRequestHandler<IRequest>)_serviceProvider.GetRequiredService(handlerType);
+        await handler.Handle(request, cancellationToken);
     }
 
     public static void RegisterHandler<THandler, TRequest, TResponse>()
@@ -36,8 +43,8 @@ public class Sender : ISender
     {
         _handlers.GetOrAdd(typeof(TRequest), a => typeof(THandler));
     }
-    
-    public static void RegisterHandler(Type handlerType,Type requestType)
+
+    public static void RegisterHandler(Type handlerType, Type requestType)
     {
         _handlers.GetOrAdd(handlerType, a => requestType);
     }

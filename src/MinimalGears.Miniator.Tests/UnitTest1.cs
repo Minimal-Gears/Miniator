@@ -10,8 +10,11 @@ public class UnitTest1
     public async Task Test1()
     {
         var services = new ServiceCollection();
-        services.AddMiniator(typeof(UnitTest1).Assembly);
         //Sender.RegisterHandler<AddCommandHandler, AddCommand, int>();
+        
+        services.AddMiniator(typeof(UnitTest1).Assembly);
+        var serviceProvider = services.BuildServiceProvider();
+        ISender sender = serviceProvider.GetRequiredService<ISender>();
 
         AddCommand request = new AddCommand
                                  {
@@ -19,7 +22,6 @@ public class UnitTest1
                                      B = 2
                                  };
 
-        ISender sender = new Sender();
         var result = await sender.Send<AddCommand, int>(request);
         Assert.Equal(3, result);
     }
