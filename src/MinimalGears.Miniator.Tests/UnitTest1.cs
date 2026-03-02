@@ -40,3 +40,11 @@ public class AddCommandHandler : IRequestHandler<AddCommand, int>
         return Task.FromResult(request.A + request.B);
     }
 }
+
+public class TestBehavior : IPipelineBehavior<AddCommand, int>
+{
+    public async Task<int> Handle(AddCommand request, HandleRequestDelegate<int> next, CancellationToken cancellationToken)
+    {
+        return await next(cancellationToken);
+    }
+}

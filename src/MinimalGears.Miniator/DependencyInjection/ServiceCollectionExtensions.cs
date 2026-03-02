@@ -26,5 +26,18 @@ public static class ServiceCollectionExtensions
             Sender.RegisterHandler(request, handler);
             services.AddScoped(handler);
         }
+
+        var behaviors = assembly.GetTypes()
+           .Where(t => t.IsClass && !t.IsAbstract && !t.IsInterface)
+           .Where(t => t.GetInterfaces()
+                     .Any(i => i.IsGenericType &&
+                               i.GetGenericTypeDefinition() == typeof(IPipelineBehavior<,>)));
+
+        foreach (var behavior in behaviors) {
+            var request = behavior.GetInterfaces().First().GetGenericArguments().First();
+            // var response = request.GetGenericArguments().First();
+            Sender.RegisterBehavior(request, behavior);
+            services.AddScoped(behavior);
+        }
     }
 }

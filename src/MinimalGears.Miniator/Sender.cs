@@ -7,6 +7,7 @@ namespace MinimalGears.Miniator;
 public class Sender : ISender
 {
     private static readonly ConcurrentDictionary<Type, Type> _handlers = [];
+    private static readonly ConcurrentDictionary<Type, Type> _behaviors = [];
     private readonly IServiceProvider _serviceProvider;
 
     public Sender(IServiceProvider serviceProvider)
@@ -23,6 +24,13 @@ public class Sender : ISender
         }
 
         var handler = (IRequestHandler<TRequest, TResponse>)_serviceProvider.GetRequiredService(handlerType);
+
+        var behaviorType = _behaviors.GetOrAdd(request.GetType(), a => null);
+        if (behaviorType != null) {
+            var behavior = (IPipelineBehavior<TRequest, TResponse>)_serviceProvider.GetRequiredService(behaviorType);
+            return await behavior.Handle(request, async c => await handler.Handle(request, c), cancellationToken);
+        }
+
         return await handler.Handle(request, cancellationToken);
     }
 
@@ -47,5 +55,10 @@ public class Sender : ISender
     public static void RegisterHandler(Type handlerType, Type requestType)
     {
         _handlers.GetOrAdd(handlerType, a => requestType);
+    }
+
+    public static void RegisterBehavior(Type handlerType, Type requestType)
+    {
+        _behaviors.GetOrAdd(handlerType, a => requestType);
     }
 }
