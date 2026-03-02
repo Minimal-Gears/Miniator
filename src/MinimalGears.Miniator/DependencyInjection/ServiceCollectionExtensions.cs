@@ -5,11 +5,15 @@ namespace MinimalGears.Miniator.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddMiniator(this IServiceCollection services, Assembly assembly)
+    public static IServiceCollection AddMiniator(this IServiceCollection services, Action<MiniatorServiceConfiguration> configuration)
     {
-        services.AddScoped<ISender, Sender>();
+        MiniatorServiceConfiguration config = new MiniatorServiceConfiguration();
+        configuration.Invoke(config);
+        foreach (var assembly in config.AssembliesToRegister) {
+            RegisterServicesFromAssembly(assembly, services);
+        }
 
-        RegisterServicesFromAssembly(assembly, services);
+        services.AddScoped<ISender, Sender>();
         return services;
     }
 

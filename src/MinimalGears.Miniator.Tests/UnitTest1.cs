@@ -11,8 +11,8 @@ public class UnitTest1
     {
         var services = new ServiceCollection();
         //Sender.RegisterHandler<AddCommandHandler, AddCommand, int>();
-        
-        services.AddMiniator(typeof(UnitTest1).Assembly);
+
+        services.AddMiniator(cfg => { cfg.RegisterServicesFromAssembly(typeof(AddCommand).Assembly); });
         var serviceProvider = services.BuildServiceProvider();
         ISender sender = serviceProvider.GetRequiredService<ISender>();
 
